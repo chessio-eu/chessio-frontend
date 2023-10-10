@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>game</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="c-board" #board>
+    <div *ngFor="let y of Arr(8).fill(1); let i = index" class="d-flex">
+      <div *ngFor="let x of Arr(8).fill(1); let j = index">
+          <app-square #square (click)="selectSquare(square)" [positionX]="j" [positionY]="i"></app-square>
+      </div>
+    </div>
+  </div>
+</ion-content>

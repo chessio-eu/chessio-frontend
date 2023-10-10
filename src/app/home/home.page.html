@@ -14,7 +14,18 @@
   </ion-header>
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <fa-icon icon="chess-pawn" style="font-size: 330px;"></fa-icon>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-button *ngIf="!searchingGame" (click)="findGame()">Find Game</ion-button>
+          <span *ngIf="searchingGame">Time waiting: {{time}} seconds</span>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </div>
 </ion-content>

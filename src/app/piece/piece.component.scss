@@ -1,0 +1,21 @@
+:host {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    left: calc(var(--left)*90px);
+    top: calc(var(--top)*90px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    &.--white {
+        color: white;
+        filter: drop-shadow(0px 0px 2px #000);
+    }
+    &.--black {
+        color: black;
+        filter: drop-shadow(0px 0px 1px #fff);
+    }
+}

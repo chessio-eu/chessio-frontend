@@ -1,0 +1,29 @@
+.c-square {
+    width: 90px;
+    height: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &.even {
+        background-color: brown;
+    }
+
+    &.odd {
+        background-color: beige;
+    }
+
+    &.--possibleMove {
+        position: relative;
+        &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: blue;
+            opacity: 0.6;
+        }
+    }
+}
