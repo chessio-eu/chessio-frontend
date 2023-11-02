@@ -1,12 +1,11 @@
-import { Component, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { faThList } from '@fortawesome/free-solid-svg-icons';
-import { IPiece } from '../piece/piece';
-import { PieceComponent } from '../piece/piece.component';
-import { PieceService } from '../piece/piece.service';
-import { SquareComponent } from '../square/square.component';
-import { IGame } from './game';
-import { GameService } from './game.service';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
+import {IPiece} from '../piece/piece';
+import {PieceComponent} from '../piece/piece.component';
+import {PieceService} from '../piece/piece.service';
+import {SquareComponent} from '../square/square.component';
+import {IGame} from './game';
+import {GameService} from './game.service';
 
 type Position = {
   x: string;
@@ -20,27 +19,31 @@ type Position = {
 })
 export class GamePage implements OnInit {
   @ViewChildren(SquareComponent) squares!: QueryList<SquareComponent>;
-  @ViewChild('board', { read: ViewContainerRef }) board!: ViewContainerRef;
+  @ViewChild('board', {read: ViewContainerRef}) board!: ViewContainerRef;
   game!: IGame;
   selectedPieceComponent?: PieceComponent
   Arr = Array;
 
-  constructor(private gameSrv: GameService, private pieceSrv: PieceService, private route: ActivatedRoute) { }
+  constructor(private gameSrv: GameService, private pieceSrv: PieceService, private route: ActivatedRoute) {
+  }
 
   ngOnInit() {
     this.gameSrv.fetchOne(this.route.snapshot.params['id']).subscribe(res => {
-      console.log(res);
       this.game = res;
       for (const piece of res.pieces) {
         // const square = this.squares.get(piece.positionY * 8 + piece.positionX);
         const pieceComponent = this.board.createComponent(PieceComponent);
         pieceComponent.setInput('piece', piece);
-        pieceComponent.instance.selected.subscribe(pieceComponent => this.selectPieceComponent(pieceComponent));
-      }
+        pieceComponent.instance.selected.subscribe(pieceComponent => {
+          const square = this.squares.get(pieceComponent.piece.positionY * 8 + pieceComponent.piece.positionX)
+          square?.possibleMove ? this.selectSquare(square) : this.selectPieceComponent(pieceComponent)
+        });
 
-      this.gameSrv.channel.bind(`game.${this.game.id}.pieceMoved`, (piece: IPiece) => {
-        // this.squares.find(square => square.piece.id == piece.id)?.setPiece(null);
-      });
+        this.gameSrv.channel.bind(`game.${this.game.id}.piece.${piece.id}.moved`, (piece: IPiece) => {
+          pieceComponent.instance.piece.positionX = piece.positionX
+          pieceComponent.instance.piece.positionY = piece.positionY
+        });
+      }
     });
   }
 
@@ -52,12 +55,11 @@ export class GamePage implements OnInit {
   }
 
   selectSquare(square: SquareComponent) {
-    if (this.selectedPieceComponent && square.possibleMove) {
-      this.pieceSrv.move(this.selectedPieceComponent.piece, square.positionX, square.positionY).subscribe(res => {
-        if (this.selectedPieceComponent) {
-          this.selectedPieceComponent.piece.positionX = res.positionX;
-          this.selectedPieceComponent.piece.positionY = res.positionY;
-        }
+    const pieceComponent = this.selectedPieceComponent
+    if (pieceComponent && square.possibleMove) {
+      this.pieceSrv.move(pieceComponent.piece, square.positionX, square.positionY).subscribe(res => {
+        pieceComponent.piece.positionX = res.positionX;
+        pieceComponent.piece.positionY = res.positionY;
         this.clearPossibleMoves();
       });
     } else {
