@@ -5,10 +5,10 @@
 export const environment = {
   production: false,
   pusher: {
-    key: 'c8dea6002bc15c42517d',
-    cluster: 'eu',
+    key: '',
+    cluster: '',
   },
-  apiUrl: "http://localhost:81/api"
+  apiUrl: "http://localhost/api"
 };
 
 /*
